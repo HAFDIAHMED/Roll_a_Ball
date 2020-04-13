@@ -1,12 +1,18 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
 
     private Rigidbody rb;
+    private int count = 0;
+
     public float speed;
+    public Text countText;
+    public Text winText;
    //Before generating the frame
    /*
    void Update()
@@ -18,6 +24,8 @@ public class PlayerController : MonoBehaviour
     void Start ()
     {
      rb = GetComponent<Rigidbody>();
+     countText.text = "Count : " + count.ToString();
+     winText.text = "";
     }
 
     //Before performing physics calculation
@@ -31,5 +39,21 @@ public class PlayerController : MonoBehaviour
         rb.AddForce(movement * speed);
     }
 
-    
+     IEnumerator OnTriggerEnter(Collider other)  
+    {
+        if (other.gameObject.CompareTag("Pick Up"))
+        {
+            other.gameObject.SetActive (false);
+            count++;
+            countText.text = "Count : " + count.ToString();
+            if(count >= 12)
+            {
+                winText.text = "You win !!";
+                yield return new WaitForSeconds(4);
+                SceneManager.LoadScene (SceneManager.GetActiveScene ().name);
+            }
+        }
+    }
+
 }
+ 
